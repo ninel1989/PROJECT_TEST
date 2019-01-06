@@ -1,6 +1,7 @@
 package player_test
 
 import (
+	cha "final_project2/channel"
 	p "final_project2/player"
 	"testing"
 
@@ -14,8 +15,8 @@ const (
 )
 
 var (
-	channelPlayer chan int
-	channels      []chan int
+	channelPlayer cha.Channel
+	channels      []cha.Channel
 )
 
 func TestPlayers(t *testing.T) {
@@ -44,7 +45,7 @@ var _ = Describe("Player", func() {
 				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
 			})
 			It("creae with empty channels list", func() {
-				var channels []chan int
+				var channels []cha.Channel
 				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
 				Expect(err).ToNot(BeNil())
 				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
@@ -53,16 +54,19 @@ var _ = Describe("Player", func() {
 	})
 })
 
-func createPlayersChannels() (chan int, []chan int) {
+func createPlayersChannels() (cha.Channel, []cha.Channel) {
 	//Create player channel
-	channelPlayer := make(chan int)
+	channel1, _ := cha.New(1, make(chan int, 2))
+	channelPlayer := channel1
 	//Create othe players channels
-	channel2 := make(chan int)
-	channel3 := make(chan int)
+	channel2, _ := cha.New(1, make(chan int, 2))
+	channel2player := channel2
+	channel3, _ := cha.New(1, make(chan int, 2))
+	channel3player := channel3
 	//Create a list of channels and add channels to the list
-	var channels []chan int
-	channels = append(channels, channel2)
-	channels = append(channels, channel3)
+	var channels []cha.Channel
+	channels = append(channels, channel2player)
+	channels = append(channels, channel3player)
 
 	return channelPlayer, channels
 }

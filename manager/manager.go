@@ -1,6 +1,7 @@
 package manager
 
 import (
+	cha "final_project2/channel"
 	p "final_project2/player"
 	"fmt"
 	"math/rand"
@@ -13,7 +14,7 @@ import (
 //@Singelton
 type Manager struct {
 	players  []p.Player
-	channels []chan int
+	channels []cha.Channel
 }
 
 var instance *Manager
@@ -34,7 +35,7 @@ func GetInstance() *Manager {
 //-----------Public functions-----------
 
 //StartGame - Starts the game
-func (m Manager) StartGame(numOfPlayers int) {
+func (m Manager) StartGame(numOfPlayers int, probability int) {
 	//Create uniq seed for this program - different random numbers every time
 	rand.Seed(time.Now().UnixNano())
 
@@ -42,7 +43,8 @@ func (m Manager) StartGame(numOfPlayers int) {
 	m.printToConsole("Adding players...")
 	//Create channels
 	for i := 0; i < numOfPlayers; i++ {
-		addChannel(make(chan int, numOfPlayers))
+		channel, _ := cha.New(probability, make(chan int, numOfPlayers-1))
+		addChannel(channel)
 	}
 	//Create players
 	for i := 0; i < numOfPlayers; i++ {
@@ -76,7 +78,7 @@ func addPlayers(players []p.Player) {
 }
 
 //addChannel - Add a channel to the channels list
-func addChannel(ch chan int) {
+func addChannel(ch cha.Channel) {
 	instance.channels = append(instance.channels, ch)
 }
 
@@ -86,8 +88,8 @@ func randomNumber() int {
 }
 
 //returns the channels list without a certain index
-func getChannelsListWithoutIndex(index int) []chan int {
-	var newChannelsList []chan int
+func getChannelsListWithoutIndex(index int) []cha.Channel {
+	var newChannelsList []cha.Channel
 	for i, element := range instance.channels {
 		if i != index {
 			newChannelsList = append(newChannelsList, element)
