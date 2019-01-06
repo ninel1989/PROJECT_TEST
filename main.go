@@ -9,3 +9,4 @@ func main() {
 	manager := m.GetInstance()
 	manager.StartGame(5)
 }
+ 
