@@ -35,7 +35,7 @@ func GetInstance() *Manager {
 //-----------Public functions-----------
 
 //StartGame - Starts the game
-func (m Manager) StartGame(numOfPlayers int, probability float64) {
+func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	//Create uniq seed for this program - different random numbers every time
 	rand.Seed(time.Now().UnixNano())
 
@@ -64,6 +64,7 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) {
 		m.printToConsole(fmt.Sprintf("Username: %s, Sum: %d", instance.players[i].GetUsername(), sum))
 	}
 	m.printToConsole("-----------Exiting game...-----------")
+	return nil
 }
 
 //-----------Private functions-----------
@@ -71,11 +72,6 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) {
 //AddPlayer - Add a player to the players list
 func addPlayer(player p.Player) {
 	instance.players = append(instance.players, player)
-}
-
-//AddPlayers - Add a player to the players list
-func addPlayers(players []p.Player) {
-	instance.players = append(instance.players, players...)
 }
 
 //addChannel - Add a channel to the channels list

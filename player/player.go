@@ -18,7 +18,7 @@ const ChannelsListNotGoodErrMsg = "Channels propbability must be between (0,1]"
 
 //New - Player constructor
 func New(username string, number int, userChannel cha.Channel, channelsList []cha.Channel) (Player, error) {
-	if channelsList == nil {
+	if channelsList == nil || len(channelsList) == 0 {
 		return Player{}, fmt.Errorf("%s", ChannelsListNotGoodErrMsg)
 	}
 	e := Player{username, number, userChannel, channelsList}
