@@ -60,10 +60,10 @@ func (e Player) SendMessagesToAllPlayers() {
 }
 
 //GetSum - get all the numbers from the channel, summerizes and prints it
-func (e Player) GetSum() string {
+func (e Player) GetSum() (string, int) {
 	sum := e.ch.GetSum()
 	sum = sum + e.number
-	return fmt.Sprintf("Username: %s, Sum: %d", e.username, sum)
+	return e.username, sum
 }
 
 //-----------Private functions-----------

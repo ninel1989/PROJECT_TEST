@@ -20,13 +20,17 @@ var (
 )
 
 func TestPlayers(t *testing.T) {
-	channelPlayer, channels = createPlayersChannels()
 
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Player Suite")
 }
 
 var _ = Describe("Player", func() {
+
+	BeforeEach(func() {
+		channelPlayer, channels = createPlayersChannels()
+	})
+
 	Describe("Check player's functionality", func() {
 		Context("Create player", func() {
 			It("Create successed", func() {
@@ -45,10 +49,33 @@ var _ = Describe("Player", func() {
 				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
 			})
 			It("Create with empty channels list", func() {
-				var channels []cha.Channel
-				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
+				var emptyChannels []cha.Channel
+				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, emptyChannels)
 				Expect(err).ToNot(BeNil())
 				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
+			})
+		})
+		Context("Send messages to other players", func() {
+			It("Send messages and retrieve sum from other channels", func() {
+				testPlayer, _ := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
+				testPlayer.SendMessagesToAllPlayers()
+				channelsList := testPlayer.GetotherPlayersChannels()
+				for _, channelElement := range channelsList {
+					Expect(channelElement.GetSum()).To(Equal(TestRandomNumber))
+				}
+			})
+		})
+		Context("Send message the same player", func() {
+			It("Send message to the same player's channel and get sum", func() {
+				//Create player channel
+				testPlayerChannel, _ := cha.New(1, make(chan int, 2))
+				var playersChannels []cha.Channel
+				playersChannels = append(playersChannels, testPlayerChannel)
+				testPlayer, _ := p.New(TestUsername, TestRandomNumber, testPlayerChannel, playersChannels)
+				testPlayer.SendMessagesToAllPlayers()
+				username, sum := testPlayer.GetSum()
+				Expect(username).To(Equal(TestUsername))
+				Expect(sum).To(Equal(TestRandomNumber * 2))
 			})
 		})
 	})
@@ -57,16 +84,13 @@ var _ = Describe("Player", func() {
 func createPlayersChannels() (cha.Channel, []cha.Channel) {
 	//Create player channel
 	channel1, _ := cha.New(1, make(chan int, 2))
-	channelPlayer := channel1
 	//Create othe players channels
 	channel2, _ := cha.New(1, make(chan int, 2))
-	channel2player := channel2
 	channel3, _ := cha.New(1, make(chan int, 2))
-	channel3player := channel3
 	//Create a list of channels and add channels to the list
-	var channels []cha.Channel
-	channels = append(channels, channel2player)
-	channels = append(channels, channel3player)
+	var playersChannels []cha.Channel
+	playersChannels = append(playersChannels, channel2)
+	playersChannels = append(playersChannels, channel3)
 
-	return channelPlayer, channels
+	return channel1, playersChannels
 }

@@ -60,7 +60,8 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) {
 	//Print sums
 	m.printToConsole("Print sums...")
 	for i := 0; i < numOfPlayers; i++ {
-		m.printToConsole(instance.players[i].GetSum())
+		username, sum := instance.players[i].GetSum()
+		m.printToConsole(fmt.Sprintf("Username: %s, Sum: %d", username, sum))
 	}
 	m.printToConsole("-----------Exiting game...-----------")
 }
