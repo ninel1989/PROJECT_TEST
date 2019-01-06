@@ -1,7 +1,7 @@
 package main
 
 import (
-	m "final_project/manager"
+	m "final_project2/manager"
 )
 
 func main() {
