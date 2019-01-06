@@ -35,7 +35,7 @@ func GetInstance() *Manager {
 //-----------Public functions-----------
 
 //StartGame - Starts the game
-func (m Manager) StartGame(numOfPlayers int, probability int) {
+func (m Manager) StartGame(numOfPlayers int, probability float64) {
 	//Create uniq seed for this program - different random numbers every time
 	rand.Seed(time.Now().UnixNano())
 
@@ -60,7 +60,7 @@ func (m Manager) StartGame(numOfPlayers int, probability int) {
 	//Print sums
 	m.printToConsole("Print sums...")
 	for i := 0; i < numOfPlayers; i++ {
-		m.printToConsole(instance.players[i].GetSum(numOfPlayers))
+		m.printToConsole(instance.players[i].GetSum())
 	}
 	m.printToConsole("-----------Exiting game...-----------")
 }

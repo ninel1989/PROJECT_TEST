@@ -29,7 +29,7 @@ func TestPlayers(t *testing.T) {
 var _ = Describe("Player", func() {
 	Describe("Check player's functionality", func() {
 		Context("Create player", func() {
-			It("creae successed", func() {
+			It("Create successed", func() {
 				testPlayer, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
 				Expect(err).To(BeNil())
 				Expect(testPlayer.GetUsername()).To(Equal(TestUsername))
@@ -39,12 +39,12 @@ var _ = Describe("Player", func() {
 				Expect(channelsList).ToNot(BeNil())
 				Expect(len(channelsList)).To(Equal(2))
 			})
-			It("creae with no channels list", func() {
+			It("Create with no channels list", func() {
 				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, nil)
 				Expect(err).ToNot(BeNil())
 				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
 			})
-			It("creae with empty channels list", func() {
+			It("Create with empty channels list", func() {
 				var channels []cha.Channel
 				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
 				Expect(err).ToNot(BeNil())
