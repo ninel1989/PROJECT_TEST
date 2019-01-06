@@ -29,7 +29,7 @@ func New(username string, number int, userChannel cha.Channel, channelsList []ch
 
 //UserToString - Returns a representation of the player
 func (e Player) UserToString() string {
-	return fmt.Sprintf("username: %s, user number: %d", e.username, e.number)
+	return fmt.Sprintf("Username: %s, User number: %d", e.username, e.number)
 }
 
 //GetUsername - return the username
