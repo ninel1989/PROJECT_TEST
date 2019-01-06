@@ -1,7 +1,7 @@
 package manager
 
 import (
-	p "final_project/player"
+	p "final_project2/player"
 	"fmt"
 	"math/rand"
 	"strconv"
