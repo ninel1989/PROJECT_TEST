@@ -23,9 +23,23 @@ var _ = Describe("Channel", func() {
 				Expect(err).To(BeNil())
 				Expect(testChannel.GetChannel()).ToNot(BeNil())
 			})
-			It("Create with bad probability", func() {
+			It("Create with high probability", func() {
 				channel := make(chan int, 1)
 				_, err := cha.New(1.5, channel)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(Equal(cha.ChannelsProbNotGoodErrMsg))
+			})
+
+			It("Create with low probability", func() {
+				channel := make(chan int, 1)
+				_, err := cha.New(-3.4, channel)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(Equal(cha.ChannelsProbNotGoodErrMsg))
+			})
+
+			It("Create with zero probability", func() {
+				channel := make(chan int, 1)
+				_, err := cha.New(0, channel)
 				Expect(err).ToNot(BeNil())
 				Expect(err.Error()).To(Equal(cha.ChannelsProbNotGoodErrMsg))
 			})
