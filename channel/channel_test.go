@@ -1,7 +1,7 @@
 package channel_test
 
 import (
-	//cha "final_project2/channel"
+	cha "final_project2/channel"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -17,21 +17,36 @@ func TestChannels(t *testing.T) {
 var _ = Describe("Channel", func() {
 	Describe("Check channel's functionality", func() {
 		Context("Create channel", func() {
-			/*It("creae successed", func() {
-				testPlayer, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
+			It("Create successed", func() {
+				channel := make(chan int, 1)
+				testChannel, err := cha.New(1, channel)
 				Expect(err).To(BeNil())
-				Expect(testPlayer.GetUsername()).To(Equal(TestUsername))
-				Expect(testPlayer.GetRandomNumber()).To(Equal(TestRandomNumber))
-				Expect(testPlayer.GetChannel()).ToNot(BeNil())
-				channelsList := testPlayer.GetotherPlayersChannels()
-				Expect(channelsList).ToNot(BeNil())
-				Expect(len(channelsList)).To(Equal(2))
+				Expect(testChannel.GetChannel()).ToNot(BeNil())
 			})
-			It("creae with bad probability", func() {
-				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, nil)
+			It("Create with bad probability", func() {
+				channel := make(chan int, 1)
+				_, err := cha.New(1.5, channel)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
-			})*/
+				Expect(err.Error()).To(Equal(cha.ChannelsProbNotGoodErrMsg))
+			})
+		})
+		Context("Insert number to channel", func() {
+			It("Insert number", func() {
+				channel := make(chan int, 1)
+				testChannel, _ := cha.New(1, channel)
+				testChannel.InsertNumber(5)
+				Expect(<-testChannel.GetChannel()).To(Equal(5))
+			})
+		})
+		Context("Get sum from channel", func() {
+			It("Get sum", func() {
+				channel := make(chan int, 3)
+				testChannel, _ := cha.New(1, channel)
+				testChannel.InsertNumber(1)
+				testChannel.InsertNumber(2)
+				testChannel.InsertNumber(3)
+				Expect(testChannel.GetSum()).To(Equal(6))
+			})
 		})
 	})
 })
