@@ -67,15 +67,12 @@ var _ = Describe("Player", func() {
 		})
 		Context("Send message the same player", func() {
 			It("Send message to the same player's channel and get sum", func() {
-				//Create player channel
 				testPlayerChannel, _ := cha.New(1, make(chan int, 2))
 				var playersChannels []cha.Channel
 				playersChannels = append(playersChannels, testPlayerChannel)
 				testPlayer, _ := p.New(TestUsername, TestRandomNumber, testPlayerChannel, playersChannels)
 				testPlayer.SendMessagesToAllPlayers()
-				username, sum := testPlayer.GetSum()
-				Expect(username).To(Equal(TestUsername))
-				Expect(sum).To(Equal(TestRandomNumber * 2))
+				Expect(testPlayer.GetSum()).To(Equal(TestRandomNumber * 2))
 			})
 		})
 	})
