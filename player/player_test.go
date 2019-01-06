@@ -1,18 +1,21 @@
 package player_test
 
 import (
-	p "final_project/player"
+	p "final_project2/player"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
+const (
+	TestUsername     = "testUser"
+	TestRandomNumber = 15
+)
+
 var (
-	TEST_USERNAME      = "testUser"
-	TEST_RANDOM_NUMBER = 15
-	channelPlayer      chan int
-	channels           []chan int
+	channelPlayer chan int
+	channels      []chan int
 )
 
 func TestPlayers(t *testing.T) {
@@ -26,25 +29,25 @@ var _ = Describe("Player", func() {
 	Describe("Check player's functionality", func() {
 		Context("Create player", func() {
 			It("creae successed", func() {
-				testPlayer, err := p.New(TEST_USERNAME, TEST_RANDOM_NUMBER, channelPlayer, channels)
+				testPlayer, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
 				Expect(err).To(BeNil())
-				Expect(testPlayer.GetUsername()).To(Equal(TEST_USERNAME))
-				Expect(testPlayer.GetRandomNumber()).To(Equal(TEST_RANDOM_NUMBER))
+				Expect(testPlayer.GetUsername()).To(Equal(TestUsername))
+				Expect(testPlayer.GetRandomNumber()).To(Equal(TestRandomNumber))
 				Expect(testPlayer.GetChannel()).ToNot(BeNil())
 				channelsList := testPlayer.GetotherPlayersChannels()
 				Expect(channelsList).ToNot(BeNil())
 				Expect(len(channelsList)).To(Equal(2))
 			})
 			It("creae with no channels list", func() {
-				_, err := p.New(TEST_USERNAME, TEST_RANDOM_NUMBER, channelPlayer, nil)
+				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, nil)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(Equal(p.CHANELS_LIST_NOT_GOOD_ERR))
+				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
 			})
 			It("creae with empty channels list", func() {
 				var channels []chan int
-				_, err := p.New(TEST_USERNAME, TEST_RANDOM_NUMBER, channelPlayer, channels)
+				_, err := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
 				Expect(err).ToNot(BeNil())
-				Expect(err.Error()).To(Equal(p.CHANELS_LIST_NOT_GOOD_ERR))
+				Expect(err.Error()).To(Equal(p.ChannelsListNotGoodErrMsg))
 			})
 		})
 	})

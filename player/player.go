@@ -1,6 +1,7 @@
 package player
 
 import (
+	cha "final_project2/channel"
 	"fmt"
 )
 
@@ -8,18 +9,20 @@ import (
 type Player struct {
 	username             string
 	number               int
-	ch                   chan int
+	ch                   cha.Channel
 	otherPlayersChannels []chan int
 }
 
-var CHANELS_LIST_NOT_GOOD_ERR = "Channels list has no channels in it"
+//ChannelsListNotGoodErrMsg - Error message
+const ChannelsListNotGoodErrMsg = "Channels propbability must be between (0,1]"
 
 //New - Player constructor
 func New(username string, number int, userChannel chan int, channelsList []chan int) (Player, error) {
 	if channelsList == nil {
-		return Player{}, fmt.Errorf("%s", CHANELS_LIST_NOT_GOOD_ERR)
+		return Player{}, fmt.Errorf("%s", ChannelsListNotGoodErrMsg)
 	}
-	e := Player{username, number, userChannel, channelsList}
+	c, _ := cha.New(1, userChannel)
+	e := Player{username, number, c, channelsList}
 	return e, nil
 }
 
@@ -42,7 +45,7 @@ func (e Player) GetRandomNumber() int {
 
 //GetChannel - return the channel of the user
 func (e Player) GetChannel() chan int {
-	return e.ch
+	return e.ch.GetChannel()
 }
 
 //GetotherPlayersChannels - return other players channels
@@ -59,11 +62,7 @@ func (e Player) SendMessagesToAllPlayers() {
 
 //GetSum - get all the numbers from the channel, summerizes and prints it
 func (e Player) GetSum(numOfPlayers int) string {
-	close(e.ch)
-	sum := e.number
-	for elem := range e.ch {
-		sum += elem
-	}
+	sum := e.ch.GetSum(numOfPlayers, e.number)
 	return fmt.Sprintf("Username: %s, Sum: %d", e.username, sum)
 }
 
