@@ -7,5 +7,6 @@ import (
 func main() {
 	//Create the manager and start the game
 	manager := m.GetInstance()
-	manager.StartGame(5)
+	//Arguments: Number of players, Probability of loosing messages
+	manager.StartGame(5, 1)
 }

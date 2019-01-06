@@ -10,19 +10,18 @@ type Player struct {
 	username             string
 	number               int
 	ch                   cha.Channel
-	otherPlayersChannels []chan int
+	otherPlayersChannels []cha.Channel
 }
 
 //ChannelsListNotGoodErrMsg - Error message
 const ChannelsListNotGoodErrMsg = "Channels propbability must be between (0,1]"
 
 //New - Player constructor
-func New(username string, number int, userChannel chan int, channelsList []chan int) (Player, error) {
+func New(username string, number int, userChannel cha.Channel, channelsList []cha.Channel) (Player, error) {
 	if channelsList == nil {
 		return Player{}, fmt.Errorf("%s", ChannelsListNotGoodErrMsg)
 	}
-	c, _ := cha.New(1, userChannel)
-	e := Player{username, number, c, channelsList}
+	e := Player{username, number, userChannel, channelsList}
 	return e, nil
 }
 
@@ -49,7 +48,7 @@ func (e Player) GetChannel() chan int {
 }
 
 //GetotherPlayersChannels - return other players channels
-func (e Player) GetotherPlayersChannels() []chan int {
+func (e Player) GetotherPlayersChannels() []cha.Channel {
 	return e.otherPlayersChannels
 }
 
@@ -69,7 +68,7 @@ func (e Player) GetSum(numOfPlayers int) string {
 //-----------Private functions-----------
 
 //sendNumber - Sends the random number of the user to the channel (argument)
-func (e Player) sendNumber(channel chan int) {
+func (e Player) sendNumber(channel cha.Channel) {
 	//e.number is always the same!!!
-	channel <- e.number
+	channel.InsertNumber(e.number)
 }
