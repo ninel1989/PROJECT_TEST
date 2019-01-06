@@ -5,6 +5,7 @@ import (
 	p "final_project2/player"
 	"testing"
 
+	"fmt"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -38,6 +39,7 @@ var _ = Describe("Player", func() {
 				Expect(err).To(BeNil())
 				Expect(testPlayer.GetUsername()).To(Equal(TestUsername))
 				Expect(testPlayer.GetRandomNumber()).To(Equal(TestRandomNumber))
+				Expect(testPlayer.UserToString()).To(Equal(fmt.Sprintf("Username: %s, User number: %d", TestUsername, TestRandomNumber)))
 				Expect(testPlayer.GetChannel()).ToNot(BeNil())
 				channelsList := testPlayer.GetotherPlayersChannels()
 				Expect(channelsList).ToNot(BeNil())
