@@ -52,7 +52,8 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	//Exchange messages between players
 	m.printToConsole("Exchange messages...")
 	for i := 0; i < numOfPlayers; i++ {
-		instance.players[i].SendMessagesToAllPlayers()
+		countLostMessages := instance.players[i].SendMessagesToAllPlayers()
+		m.printToConsole(fmt.Sprintf("Username: %s, Amount of lost messages: %d", instance.players[i].GetUsername(), countLostMessages))
 	}
 	//Print sums
 	m.printToConsole("Print sums...")

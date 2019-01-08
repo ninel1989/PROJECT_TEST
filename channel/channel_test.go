@@ -45,11 +45,19 @@ var _ = Describe("Channel", func() {
 			})
 		})
 		Context("Insert number to channel", func() {
-			It("Insert number", func() {
+			It("Insert number with probability 1", func() {
 				channel := make(chan int, 1)
 				testChannel, _ := cha.New(1, channel)
-				testChannel.InsertNumber(5)
+				err := testChannel.InsertNumber(5)
+				Expect(err).To(BeNil())
 				Expect(<-testChannel.GetChannel()).To(Equal(5))
+			})
+			It("Insert number with probability 0", func() {
+				channel := make(chan int, 1)
+				testChannel, _ := cha.New(0, channel)
+				err := testChannel.InsertNumber(5)
+				Expect(err).ToNot(BeNil())
+				Expect(err.Error()).To(Equal(cha.MessageLostErrMsg))
 			})
 		})
 		Context("Get sum from channel", func() {
