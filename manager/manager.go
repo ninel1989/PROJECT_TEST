@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"strconv"
 	"sync"
-	"time"
 )
 
 //Manager - The manager of the game
@@ -36,8 +35,6 @@ func GetInstance() *Manager {
 
 //StartGame - Starts the game
 func (m Manager) StartGame(numOfPlayers int, probability float64) error {
-	//Create uniq seed for this program - different random numbers every time
-	rand.Seed(time.Now().UnixNano())
 
 	m.printToConsole("-----------Starts the game...-----------")
 	m.printToConsole("Adding players...")
