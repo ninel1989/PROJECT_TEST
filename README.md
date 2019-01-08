@@ -6,3 +6,8 @@ In this repository, we demonstrate a sum protocol.
 3. After they get all the messages, they summerize the numbers and print the result.
 
 We expect the results to be equal (because non of the messages went lost).
+
+Test your code:
+go test ./...
+Coverage flag:
+-cover
