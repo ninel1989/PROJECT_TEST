@@ -7,7 +7,7 @@ In this repository, we demonstrate a sum protocol.
 
 We expect the results to be equal (because non of the messages went lost).
 
-Test your code:
-go test ./...
-Coverage flag:
+Test your code:<br>
+go test ./...<br>
+Coverage flag:<br>
 -cover
