@@ -57,7 +57,7 @@ func (e Player) SendMessagesToAllPlayers() int {
 	countLostMessages := 0
 	for _, element := range e.otherPlayersChannels {
 		if err := e.sendNumber(element); err != nil {
-			countLostMessages += 1
+			countLostMessages++
 		}
 	}
 	return countLostMessages
