@@ -29,7 +29,7 @@ func TestPlayers(t *testing.T) {
 var _ = Describe("Player", func() {
 
 	BeforeEach(func() {
-		channelPlayer, channels = createPlayersChannels()
+		channelPlayer, channels = createPlayersChannels(1)
 	})
 
 	Describe("Check player's functionality", func() {
@@ -58,13 +58,20 @@ var _ = Describe("Player", func() {
 			})
 		})
 		Context("Send messages to other players", func() {
-			It("Send messages and retrieve sum from other channels", func() {
+			It("Send messages and retrieve sum from other channels with probability of 0", func() {
 				testPlayer, _ := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
-				testPlayer.SendMessagesToAllPlayers()
+				amountLostMsg := testPlayer.SendMessagesToAllPlayers()
+				Expect(amountLostMsg).To(Equal(0))
 				channelsList := testPlayer.GetotherPlayersChannels()
 				for _, channelElement := range channelsList {
 					Expect(channelElement.GetSum()).To(Equal(TestRandomNumber))
 				}
+			})
+			It("Send messages and retrieve sum from other channels with probability of 0", func() {
+				channelPlayer, channels = createPlayersChannels(0)
+				testPlayer, _ := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
+				amountLostMsg := testPlayer.SendMessagesToAllPlayers()
+				Expect(amountLostMsg).To(Equal(2))
 			})
 		})
 		Context("Send message the same player", func() {
@@ -80,12 +87,12 @@ var _ = Describe("Player", func() {
 	})
 })
 
-func createPlayersChannels() (cha.Channel, []cha.Channel) {
+func createPlayersChannels(prob float64) (cha.Channel, []cha.Channel) {
 	//Create player channel
-	channel1, _ := cha.New(1, make(chan int, 2))
+	channel1, _ := cha.New(prob, make(chan int, 2))
 	//Create othe players channels
-	channel2, _ := cha.New(1, make(chan int, 2))
-	channel3, _ := cha.New(1, make(chan int, 2))
+	channel2, _ := cha.New(prob, make(chan int, 2))
+	channel3, _ := cha.New(prob, make(chan int, 2))
 	//Create a list of channels and add channels to the list
 	var playersChannels []cha.Channel
 	playersChannels = append(playersChannels, channel2)

@@ -53,10 +53,14 @@ func (e Player) GetotherPlayersChannels() []cha.Channel {
 }
 
 //SendMessagesToAllPlayers - Sends the random number of the user to all the others players channels
-func (e Player) SendMessagesToAllPlayers() {
+func (e Player) SendMessagesToAllPlayers() int {
+	countLostMessages := 0
 	for _, element := range e.otherPlayersChannels {
-		e.sendNumber(element)
+		if err := e.sendNumber(element); err != nil {
+			countLostMessages++
+		}
 	}
+	return countLostMessages
 }
 
 //GetSum - get all the numbers from the channel, summerizes and prints it
@@ -69,7 +73,10 @@ func (e Player) GetSum() int {
 //-----------Private functions-----------
 
 //sendNumber - Sends the random number of the user to the channel (argument)
-func (e Player) sendNumber(channel cha.Channel) {
+func (e Player) sendNumber(channel cha.Channel) error {
 	//e.number is always the same!!!
-	channel.InsertNumber(e.number)
+	if err := channel.InsertNumber(e.number); err != nil {
+		return err
+	}
+	return nil
 }
