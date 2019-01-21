@@ -8,7 +8,7 @@ In this repository, we demonstrate a sum protocol.
 Each time, the probability of successful recieving messages by the other players is random.
 We expect the results to not always be equal. If the probability is low, we expect many messages to be lost and if its high, we expect fewer messages to be lost.
 
-Test your code:<br>
+Test code:<br>
 go test ./...<br>
 Coverage flag:<br>
 -cover
