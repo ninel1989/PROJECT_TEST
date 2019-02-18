@@ -19,9 +19,6 @@ type Manager struct {
 var instance *Manager
 var once sync.Once
 
-//Concurrency wait group - for 'go' function (threads)
-//var waitGroup sync.WaitGroup
-
 //GetInstance - Get instance of the manager - Manager constructor
 func GetInstance() *Manager {
 	//Syncronize creation and return
