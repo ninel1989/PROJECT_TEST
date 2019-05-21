@@ -3,28 +3,35 @@ package main
 import (
 	m "final_project2/manager"
 	"fmt"
-	"github.com/gorilla/mux"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	"math/rand"
 	"net/http"
 	"time"
 )
 
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/books/{title}/page/{page}", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		title := vars["title"]
-		page := vars["page"]
+	r := gin.Default()
 
-		fmt.Fprintf(w, "You've requested the book ###: %s on page %s\n", title, page)
-	})
+	//Use cors for go server (Cross-Origin Resource Sharing)
+	r.Use(cors.Default())
 
-	http.ListenAndServe(":8000", r)
+	projectAPI := r.Group("/project")
+	projectAPI.GET("/", handleRequest)
+
+	r.Run()
+
 	//runScenario()
 }
 
+func handleRequest(c *gin.Context) {
+
+	c.Writer.WriteHeader(http.StatusOK)
+	c.Writer.WriteString("Response from the GO Server\n")
+}
+
 func runScenario() {
-	//Create uniq seed for this program - different random numbers every time
+	//Create unique seed for this program - different random numbers every time
 	rand.Seed(time.Now().UnixNano())
 
 	//Create the manager and start the game
