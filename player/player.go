@@ -70,6 +70,19 @@ func (e Player) GetSum() int {
 	return sum
 }
 
+func (e Player) LeaderAlgo() {
+	int currentRound
+	int recTimer
+	int sendTimer
+
+	while(true){
+		for _, element := range e.otherPlayersChannels{
+			if	
+		}
+	}
+
+}
+
 //-----------Private functions-----------
 
 //sendNumber - Sends the random number of the user to the channel (argument)
@@ -79,4 +92,8 @@ func (e Player) sendNumber(channel cha.Channel) error {
 		return err
 	}
 	return nil
+}
+
+func (e player) startRound(int s){
+
 }
