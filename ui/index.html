@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Leader Election Algorithm</title>
+    </head>
+    <body>
+        <button onclick="loadRequestForAlgorithm(processRequest)">Click me</button>
+        <script>
+            function loadRequestForAlgorithm(callback) {
+
+                //Send a request to the Server (GO)
+                var request = new XMLHttpRequest();
+
+                request.onreadystatechange = function() {
+                    if (request.readyState == 4 && request.status == 200) {
+                      callback(request.response);
+                    }
+                }
+
+                request.open('GET', "//localhost:8080/project/", true);
+                request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+
+                console.info("Sending the respons...");
+                request.send('');
+            }
+
+            function processRequest(response) {
+                console.info("Handling the respons...");
+                if (response.length > 0) {
+                    document.write("<p>" + response + "</p>");
+                } else {
+                    console.error("There is no response");
+                }
+            }
+
+        </script>
+    </body>
+</html>
