@@ -38,12 +38,12 @@ func (e Player) GetUsername() string {
 }
 
 //GetRandomNumber - return the random number of the user
-func (e Player) GetRandomNumber() int {
+func (e Player) GetNumber() int {
 	return e.number
 }
 
 //GetChannel - return the channel of the user
-func (e Player) GetChannel() chan int {
+func (e Player) GetChannel() chan string {
 	return e.ch.GetChannel()
 }
 
@@ -74,10 +74,27 @@ func (e Player) LeaderAlgo() {
 	int currentRound
 	int recTimer
 	int sendTimer
+	int a
+	int b
+	int d
 
 	while(true){
 		for _, element := range e.otherPlayersChannels{
-			if	
+			if	e.ch.message == "START" || e.ch.message == "ALIVE"{
+				if currentRound > e.ch.GetID(){
+					e.sendMessage("START")
+				}
+				else{
+					if currentRound < e.ch.GetID(){
+						startRound(e.ch.GetID)
+					}
+					recTimer = 0
+				}
+			}
+		}
+		recTimer = recTimer + 1
+		if recTimer > 8*Round(d / a){
+			if e.
 		}
 	}
 
@@ -86,9 +103,16 @@ func (e Player) LeaderAlgo() {
 //-----------Private functions-----------
 
 //sendNumber - Sends the random number of the user to the channel (argument)
-func (e Player) sendNumber(channel cha.Channel) error {
+//func (e Player) sendNumber(channel cha.Channel) error {
 	//e.number is always the same!!!
-	if err := channel.InsertNumber(e.number); err != nil {
+//	if err := channel.InsertNumber(e.number); err != nil {
+//		return err
+//	}
+//	return nil
+//}
+
+func (e Player) sendMessage(channel cha.Channel, string msg) error {
+	if err := channel.InsertMessage(msg); err != nil {
 		return err
 	}
 	return nil
