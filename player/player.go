@@ -1,7 +1,6 @@
 package player
 
 import (
-	cha "final_project2/channel"
 	"fmt"
 )
 
@@ -70,22 +69,22 @@ func (e Player) GetSum() int {
 	return sum
 }
 
-func (e Player) LeaderAlgo() {
-	int currentRound
-	int recTimer
-	int sendTimer
-	int a
-	int b
-	int d
+func (e Player) LeaderAlgo(int alfa, int beta, int delta) {
+	currentRound = 0
+	recTimer = 0
+	var sendTimer = 0
+	a = alfa
+	b = beta
+	d = delta
 
-	while(true){
-		for _, element := range e.otherPlayersChannels{
-			if	e.ch.message == "START" || e.ch.message == "ALIVE"{
-				if currentRound > e.ch.GetID(){
+	while(true)
+	{
+		for _, element := range e.otherPlayersChannels {
+			if e.ch.message == "START" || e.ch.message == "ALIVE" {
+				if currentRound > e.ch.GetID() {
 					e.sendMessage("START")
-				}
-				else{
-					if currentRound < e.ch.GetID(){
+				} else {
+					if currentRound < e.ch.GetID() {
 						startRound(e.ch.GetID)
 					}
 					recTimer = 0
@@ -93,8 +92,11 @@ func (e Player) LeaderAlgo() {
 			}
 		}
 		recTimer = recTimer + 1
-		if recTimer > 8*Round(d / a){
-			if e.
+		if recTimer > 8*Round(d/a) {
+			if e.GetNumber() != (currentRound % 11) {
+				startRound(currentRound + 1)
+			}
+			recTimer = 0
 		}
 	}
 
@@ -104,7 +106,7 @@ func (e Player) LeaderAlgo() {
 
 //sendNumber - Sends the random number of the user to the channel (argument)
 //func (e Player) sendNumber(channel cha.Channel) error {
-	//e.number is always the same!!!
+//e.number is always the same!!!
 //	if err := channel.InsertNumber(e.number); err != nil {
 //		return err
 //	}
@@ -118,6 +120,6 @@ func (e Player) sendMessage(channel cha.Channel, string msg) error {
 	return nil
 }
 
-func (e player) startRound(int s){
+func (e player) startRound(int s) {
 
 }
