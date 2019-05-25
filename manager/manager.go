@@ -1,8 +1,8 @@
 package manager
 
 import (
-	cha "final_project2/channel"
-	p "final_project2/player"
+	cha "final_project3/channel"
+	p "final_project3/player"
 	"fmt"
 	"math/rand"
 	"strconv"

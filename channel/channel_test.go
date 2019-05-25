@@ -1,7 +1,7 @@
 package channel_test
 
 import (
-	cha "final_project2/channel"
+	cha "final_project3/channel"
 	"testing"
 
 	. "github.com/onsi/ginkgo"

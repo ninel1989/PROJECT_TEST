@@ -1,7 +1,7 @@
 package player
 
 import (
-	cha "final_project2/channel"
+	cha "final_project3/channel"
 	"fmt"
 )
 

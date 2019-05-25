@@ -1,7 +1,7 @@
 package manager_test
 
 import (
-	m "final_project2/manager"
+	m "final_project3/manager"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
