@@ -96,15 +96,20 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 	for {
 		for _, element := range e.otherPlayersChannels {
 			msg := <-e.GetChannel()
+			//s := strings.Split(msg, ",")
+			//messageFrom, otherRound := s[0], s[1]
 			if msg == "START" || msg == "ALIVE" {
-				if currentRound > e.ch.GetID() {
+				otherRound := element.GetRound()
+				if currentRound > otherRound {
 					e.sendMessage(element, "START")
 				} else {
-					if currentRound < e.ch.GetID() {
-						e.startRound(e.ch.GetID())
+
+					if currentRound < otherRound {
+						e.startRound(otherRound)
+						sendTimer = int(d / b)
 					}
-					recTimer = 0
 				}
+				recTimer = 0
 			}
 		}
 		recTimer = recTimer + 1
@@ -117,7 +122,7 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 		sendTimer = sendTimer + 1
 		if sendTimer >= int(d/b) {
 			if e.GetNumber() == (currentRound % 11) {
-				msgToSend := fmt.Sprintf("message: %s, round: %d", "ALIVE", currentRound)
+				msgToSend := "ALIVE"
 				e.GetChannel() <- msgToSend
 				e.SendMessagesToAllPlayers()
 			}
@@ -147,5 +152,8 @@ func (e Player) sendMessage(channel cha.Channel, msg string) error {
 }
 
 func (e Player) startRound(s int) {
+	if e.GetNumber() != (s % 11) {
 
+	}
+	e.ch.SetRound(s)
 }

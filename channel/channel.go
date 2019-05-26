@@ -9,6 +9,7 @@ import (
 type Channel struct {
 	probability float64
 	id          int
+	round       int
 	message     chan string
 }
 
@@ -19,11 +20,11 @@ const ChannelsProbNotGoodErrMsg = "Channels propbability must be between (0,1]"
 const MessageLostErrMsg = "The message got lost in the way"
 
 //New - Channel constructor
-func New(probability float64, id int, message chan string) (Channel, error) {
+func New(probability float64, id int, round int, message chan string) (Channel, error) {
 	if probability > 1 || probability <= 0 {
 		return Channel{}, fmt.Errorf("%s", ChannelsProbNotGoodErrMsg)
 	}
-	c := Channel{probability, id, message}
+	c := Channel{probability, id, round, message}
 	return c, nil
 }
 
@@ -37,6 +38,16 @@ func (c Channel) GetChannel() chan string {
 //GetID - return channel id
 func (c Channel) GetID() int {
 	return c.id
+}
+
+//GetRound - return channel round
+func (c Channel) GetRound() int {
+	return c.round
+}
+
+//SetRound - setting channel round
+func (c Channel) SetRound(i int) {
+	c.round = i
 }
 
 // InsertNumber - Insert number from the player to the channel

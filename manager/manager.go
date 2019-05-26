@@ -38,8 +38,8 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	//Create channels
 	for i := 0; i < numOfPlayers; i++ {
 		msg := make(chan string)
-		msg <- fmt.Sprintf("%s,%d", "START", 0)
-		channel, _ := cha.New(probability, i, msg)
+		msg <- "START"
+		channel, _ := cha.New(probability, i, 0, msg)
 		addChannel(channel)
 	}
 	//Create players
