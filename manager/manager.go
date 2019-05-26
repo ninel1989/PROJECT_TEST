@@ -1,8 +1,8 @@
 package manager
 
 import (
-	cha "final_project2/channel"
-	p "final_project2/player"
+	cha "final_project3/channel"
+	p "final_project3/player"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -37,7 +37,9 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	m.printToConsole("Adding players...")
 	//Create channels
 	for i := 0; i < numOfPlayers; i++ {
-		channel, _ := cha.New(probability, 0, make(chan message, "START"))
+		msg := make(chan string)
+		msg <- fmt.Sprintf("%s,%d", "START", 0)
+		channel, _ := cha.New(probability, i, msg)
 		addChannel(channel)
 	}
 	//Create players
@@ -49,16 +51,16 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	//Exchange messages between players
 	m.printToConsole("Exchange messages...")
 	for i := 0; i < numOfPlayers; i++ {
-		countLostMessages := instance.players[i].SendMessagesToAllPlayers()
-		m.printToConsole(fmt.Sprintf("Username: %s, Amount of lost messages: %d", instance.players[i].GetUsername(), countLostMessages))
+		instance.players[i].SendMessagesToAllPlayers()
+		m.printToConsole(fmt.Sprintf("Username: %s", instance.players[i].GetUsername()))
 	}
-	//Print sums
-	m.printToConsole("Print sums...")
-	for i := 0; i < numOfPlayers; i++ {
-		sum := instance.players[i].GetSum()
-		m.printToConsole(fmt.Sprintf("Username: %s, Sum: %d", instance.players[i].GetUsername(), sum))
-	}
-	m.printToConsole("-----------Exiting game...-----------")
+	// //Print sums
+	// m.printToConsole("Print sums...")
+	// for i := 0; i < numOfPlayers; i++ {
+	// 	sum := instance.players[i].GetSum()
+	// 	m.printToConsole(fmt.Sprintf("Username: %s, Sum: %d", instance.players[i].GetUsername(), sum))
+	// }
+	// m.printToConsole("-----------Exiting game...-----------")
 	return nil
 }
 
