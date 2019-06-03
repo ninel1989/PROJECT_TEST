@@ -44,7 +44,7 @@ func (e Player) GetNumber() int {
 }
 
 //GetChannel - return the channel of the user
-func (e Player) GetChannel() chan string {
+func (e Player) GetChannel() chan int {
 	return e.ch.GetChannel()
 }
 
@@ -54,9 +54,8 @@ func (e Player) GetotherPlayersChannels() []cha.Channel {
 }
 
 //SendMessagesToAllPlayers - Sends the random number of the user to all the others players channels
-func (e Player) SendMessagesToAllPlayers() {
+func (e Player) SendMessagesToAllPlayers(msg string) {
 	//countLostMessages := 0
-	msg := <-e.GetChannel()
 	for _, element := range e.otherPlayersChannels {
 		if err := e.sendMessage(element, msg); err != nil {
 			//countLostMessages++
@@ -95,11 +94,14 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 
 	for {
 		for _, element := range e.otherPlayersChannels {
-			msg := <-e.GetChannel()
+			starts := e.ch.GetStartMsg()
+			alives := e.ch.GetAliveMsg()
 			//s := strings.Split(msg, ",")
 			//messageFrom, otherRound := s[0], s[1]
-			if msg == "START" || msg == "ALIVE" {
-				otherRound := element.GetRound()
+			if ((starts[element.GetID()]) > 0) || ((alives[element.GetID()]) > 0) {
+				starts[element.GetID()]--
+				alives[element.GetID()]--
+				otherRound := <-element.GetChannel()
 				if currentRound > otherRound {
 					e.sendMessage(element, "START")
 				} else {
@@ -116,15 +118,14 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 		if recTimer > 8*int(math.Round(float64(d/a))) {
 			if e.GetNumber() != (currentRound % 11) {
 				e.startRound(currentRound + 1)
+				sendTimer = int(d / b)
 			}
 			recTimer = 0
 		}
 		sendTimer = sendTimer + 1
 		if sendTimer >= int(d/b) {
 			if e.GetNumber() == (currentRound % 11) {
-				msgToSend := "ALIVE"
-				e.GetChannel() <- msgToSend
-				e.SendMessagesToAllPlayers()
+				e.SendMessagesToAllPlayers("ALIVE")
 			}
 			Leader = (currentRound % 11)
 			sendTimer = 0
@@ -145,7 +146,7 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 //}
 
 func (e Player) sendMessage(channel cha.Channel, msg string) error {
-	if err := channel.InsertMessage(msg); err != nil {
+	if err := channel.InsertMessage(msg, e.ch.GetID()); err != nil {
 		return err
 	}
 	return nil
@@ -153,7 +154,9 @@ func (e Player) sendMessage(channel cha.Channel, msg string) error {
 
 func (e Player) startRound(s int) {
 	if e.GetNumber() != (s % 11) {
-
+		i := (s % 11)
+		element := e.otherPlayersChannels[i]
+		e.sendMessage(element, "START")
 	}
 	e.ch.SetRound(s)
 }

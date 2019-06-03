@@ -37,9 +37,11 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	m.printToConsole("Adding players...")
 	//Create channels
 	for i := 0; i < numOfPlayers; i++ {
-		msg := make(chan string)
-		msg <- "START"
-		channel, _ := cha.New(probability, i, 0, msg)
+		round := make(chan int)
+		round <- 0
+		var alives []int
+		var starts []int
+		channel, _ := cha.New(probability, i, "none", starts, alives, round)
 		addChannel(channel)
 	}
 	//Create players
@@ -47,13 +49,13 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i))
 		addPlayer(e)
 	}
-	m.printToConsole("The players in the currnt game:\n" + m.getPlayersList())
-	//Exchange messages between players
-	m.printToConsole("Exchange messages...")
-	for i := 0; i < numOfPlayers; i++ {
-		instance.players[i].SendMessagesToAllPlayers()
-		m.printToConsole(fmt.Sprintf("Username: %s", instance.players[i].GetUsername()))
-	}
+	// m.printToConsole("The players in the currnt game:\n" + m.getPlayersList())
+	// //Exchange messages between players
+	// m.printToConsole("Exchange messages...")
+	// for i := 0; i < numOfPlayers; i++ {
+	// 	instance.players[i].SendMessagesToAllPlayers()
+	// 	m.printToConsole(fmt.Sprintf("Username: %s", instance.players[i].GetUsername()))
+	// }
 	// //Print sums
 	// m.printToConsole("Print sums...")
 	// for i := 0; i < numOfPlayers; i++ {

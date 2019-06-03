@@ -9,8 +9,10 @@ import (
 type Channel struct {
 	probability float64
 	id          int
-	round       int
-	message     chan string
+	message     string
+	startMsg    []int
+	aliveMsg    []int
+	round       chan int
 }
 
 //ChannelsProbNotGoodErrMsg - Error message
@@ -20,19 +22,20 @@ const ChannelsProbNotGoodErrMsg = "Channels propbability must be between (0,1]"
 const MessageLostErrMsg = "The message got lost in the way"
 
 //New - Channel constructor
-func New(probability float64, id int, round int, message chan string) (Channel, error) {
+func New(probability float64, id int, message string, startMsg []int, aliveMsg []int,
+	round chan int) (Channel, error) {
 	if probability > 1 || probability <= 0 {
 		return Channel{}, fmt.Errorf("%s", ChannelsProbNotGoodErrMsg)
 	}
-	c := Channel{probability, id, round, message}
+	c := Channel{probability, id, message, startMsg, aliveMsg, round}
 	return c, nil
 }
 
 //-----------Public functions-----------
 
 //GetChannel - return the channel of the user
-func (c Channel) GetChannel() chan string {
-	return c.message
+func (c Channel) GetChannel() chan int {
+	return c.round
 }
 
 //GetID - return channel id
@@ -40,14 +43,24 @@ func (c Channel) GetID() int {
 	return c.id
 }
 
-//GetRound - return channel round
-func (c Channel) GetRound() int {
-	return c.round
+//GetMessage - return channel round
+func (c Channel) GetMessage() string {
+	return c.message
 }
 
 //SetRound - setting channel round
 func (c Channel) SetRound(i int) {
-	c.round = i
+	c.round <- i
+}
+
+//GetStartMsg - return the array of start messages
+func (c Channel) GetStartMsg() []int {
+	return c.startMsg
+}
+
+//GetAliveMsg - return the array of alive messages
+func (c Channel) GetAliveMsg() []int {
+	return c.aliveMsg
 }
 
 // InsertNumber - Insert number from the player to the channel
@@ -61,10 +74,14 @@ func (c Channel) SetRound(i int) {
 // }
 
 //InsertMessage - Insert number from the player to the channel
-func (c Channel) InsertMessage(msg string) error {
+func (c Channel) InsertMessage(msg string, fromCh int) error {
 	randomNumber := rand.Float64()
 	if randomNumber < c.probability {
-		c.message <- msg
+		if msg == "ALIVE" {
+			c.aliveMsg[fromCh]++
+		} else {
+			c.startMsg[fromCh]++
+		}
 		return nil
 	}
 	return fmt.Errorf("%s", MessageLostErrMsg)
