@@ -1,39 +1,115 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <title>Leader Election Algorithm</title>
-    </head>
-    <body>
-        <button onclick="loadRequestForAlgorithm(processRequest)">Click me</button>
-        <script>
-            function loadRequestForAlgorithm(callback) {
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sign Up Form by Colorlib</title>
 
-                //Send a request to the Server (GO)
-                var request = new XMLHttpRequest();
+    <!-- Font Icon -->
+    <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 
-                request.onreadystatechange = function() {
-                    if (request.readyState == 4 && request.status == 200) {
-                      callback(request.response);
-                    }
+    <!-- Main css -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="main">
+
+        <div class="container">
+            <div class="booking-content">
+                <div class="booking-image">
+                    <img class="booking-img" src="images/leaderPhoto.jpg" alt="Booking Image">
+                </div>
+                <div class="booking-form">
+                    <form name="algoForm" id="booking-form" onsubmit="loadRequestForAlgorithm(processRequest)">
+                        <h1>Robust Stabilizing Leader Election</h1>
+                        <div class="form-group">
+                            <div class="select-list">
+                                <select name="food" id="food" required>
+                                    <option value="">Crashes</option>
+                                    <option value="no">There is a crash</option>
+                                    <option value="yes" >There is no crash</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-radio">
+                            <label class="label-radio"> Select The number of players</label>
+                            <div class="radio-item-list">
+                                <span class="radio-item">
+                                    <input type="radio" name="number_people" value="5" id="number_people_5"/>
+                                    <label for="number_people_5">5</label>
+                                </span>
+                                <span class="radio-item active">
+                                    <input type="radio" name="number_people" value="10" id="number_people_10" checked="checked"/>
+                                    <label for="number_people_10">10</label>
+                                </span>
+                                <span class="radio-item">
+                                    <input type="radio" name="number_people" value="15" id="number_people_15"/>
+                                    <label for="number_people_15">15</label>
+                                </span>
+                                <span class="radio-item">
+                                    <input type="radio" name="number_people" value="20" id="number_people_20"/>
+                                    <label for="number_people_20">20</label>
+                                </span>
+                                <span class="radio-item">
+                                    <input type="radio" name="number_people" value="25" id="number_people_25"/>
+                                    <label for="number_people_25">25</label>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-submit">
+                            <input type="submit" value="Find the leader" class="submit" id="submit" name="submit" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script>
+        var crash = "no"
+        var numOfPlayers = 10
+        
+        function loadRequestForAlgorithm(callback) {
+            //Send a request to the Server (GO)
+            var request = new XMLHttpRequest();
+
+            request.onreadystatechange = function() {
+                if (request.readyState == 4 && request.status == 200) {
+                  callback(request.response);
                 }
-
-                request.open('GET', "//localhost:8080/project/", true);
-                request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
-
-                console.info("Sending the respons...");
-                request.send('');
             }
 
-            function processRequest(response) {
-                console.info("Handling the respons...");
-                if (response.length > 0) {
-                    document.write("<p>" + response + "</p>");
-                } else {
-                    console.error("There is no response");
-                }
-            }
+            request.open('GET', "//localhost:8080/project/", true);
+            request.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
+            request.send('');
+        }
 
-        </script>
-    </body>
+        function processRequest(response) {
+            console.info("Handling the respons...");
+            if (response.length > 0) {
+                localStorage.setItem("algoResults", response);
+                localStorage.setItem("crash", crash);
+                localStorage.setItem("numOfPlayers", numOfPlayers);
+                var formResults = $('#booking-form').serialize();
+                var splitedResults = formResults.split("=");
+                numOfPlayers = splitedResults[1]
+                alert("crash: " + crash);
+                window.location.pathname = "algorithmPage.html";
+            } else {
+                alert("Error: There is no response")
+                console.error("There is no response");
+            }
+        }
+        
+//        function crashes(theCrash) {
+//            crash = theCrash;
+//        }
+    </script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
 </html>
