@@ -10,19 +10,6 @@ import (
 	"time"
 )
 
-//Results - The results of the algorithm
-type Results struct {
-	leader  int
-	Message [5]Message
-}
-
-//Message - The messagesbetween the players
-type Message struct {
-	from    int
-	to      int
-	content string
-}
-
 func main() {
 	r := gin.Default()
 
