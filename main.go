@@ -3,7 +3,7 @@ package main
 import (
 	m "final_project3/manager"
 	"fmt"
-	// "github.com/gin-contrib/cors"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"math/rand"
 	"net/http"
@@ -11,23 +11,27 @@ import (
 )
 
 func main() {
-	// r := gin.Default()
+	r := gin.Default()
 
-	// //Use cors for go server (Cross-Origin Resource Sharing)
-	// r.Use(cors.Default())
+	//Use cors for go server (Cross-Origin Resource Sharing)
+	r.Use(cors.Default())
 
-	// projectAPI := r.Group("/project")
-	// projectAPI.GET("/", handleRequest)
+	projectAPI := r.Group("/project")
+	projectAPI.GET("/", handleRequest)
 
-	// r.Run()
+	r.Run()
 
-	runScenario()
+	// runScenario()
 }
 
 func handleRequest(c *gin.Context) {
 
 	c.Writer.WriteHeader(http.StatusOK)
-	c.Writer.WriteString("Response from the GO Server\n")
+	c.Writer.WriteString(algorithmResultsExample())
+}
+
+func algorithmResultsExample() string {
+	return "3:2,3,Alive-4,2,Alive-5,1,Start-4,5,Alive-4,3,Start-4,1,Start-2,3,Alive-3,2,Start-1,3,Alive"
 }
 
 func runScenario() {
