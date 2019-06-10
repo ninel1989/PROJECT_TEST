@@ -37,10 +37,10 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	m.printToConsole("Adding players...")
 	//Create channels
 	for i := 0; i < numOfPlayers; i++ {
-		round := make(chan int)
-		round <- 0
-		var alives []int
-		var starts []int
+		round := make(chan int, 100)
+		//round <- 0
+		alives := make([]int, numOfPlayers)
+		starts := make([]int, numOfPlayers)
 		channel, _ := cha.New(probability, i, "none", starts, alives, round)
 		addChannel(channel)
 	}
@@ -48,7 +48,17 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	for i := 0; i < numOfPlayers; i++ {
 		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i))
 		addPlayer(e)
+		//leader := e.LeaderAlgo(8, 8, 8)
+
 	}
+
+	//RunAlgo - executing the algorithm
+	go func() {
+		for _, element := range instance.players {
+			leader := element.LeaderAlgo(8, 8, 8)
+			m.printToConsole(fmt.Sprintf("leader id: %d", leader))
+		}
+	}()
 	// m.printToConsole("The players in the currnt game:\n" + m.getPlayersList())
 	// //Exchange messages between players
 	// m.printToConsole("Exchange messages...")

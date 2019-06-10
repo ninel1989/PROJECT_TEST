@@ -3,25 +3,25 @@ package main
 import (
 	m "final_project3/manager"
 	"fmt"
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 	"math/rand"
 	"net/http"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	r := gin.Default()
+	// r := gin.Default()
 
-	//Use cors for go server (Cross-Origin Resource Sharing)
-	r.Use(cors.Default())
+	// //Use cors for go server (Cross-Origin Resource Sharing)
+	// r.Use(cors.Default())
 
-	projectAPI := r.Group("/project")
-	projectAPI.GET("/", handleRequest)
+	// projectAPI := r.Group("/project")
+	// projectAPI.GET("/", handleRequest)
 
-	r.Run()
+	// r.Run()
 
-	// runScenario()
+	runScenario()
 }
 
 func handleRequest(c *gin.Context) {

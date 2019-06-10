@@ -84,6 +84,7 @@ func (e Player) SendMessagesToAllPlayers(msg string) {
 
 //LeaderAlgo - execute the second algorithm
 func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
+	//m.printToConsole(fmt.Sprintf("Username id: %d, starts the algorithm", instance.players[i].GetUsername(), countLostMessages))
 	var currentRound = 0
 	var recTimer = 0
 	var sendTimer = 0
@@ -91,7 +92,7 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 	var b = beta
 	var d = delta
 	var Leader = -1
-
+	e.GetChannel() <- 0
 	for {
 		for _, element := range e.otherPlayersChannels {
 			starts := e.ch.GetStartMsg()
@@ -116,7 +117,7 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 		}
 		recTimer = recTimer + 1
 		if recTimer > 8*int(math.Round(float64(d/a))) {
-			if e.GetNumber() != (currentRound % 11) {
+			if e.GetNumber() != (currentRound % (len(e.GetotherPlayersChannels())+1)) {
 				e.startRound(currentRound + 1)
 				sendTimer = int(d / b)
 			}
@@ -124,10 +125,10 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 		}
 		sendTimer = sendTimer + 1
 		if sendTimer >= int(d/b) {
-			if e.GetNumber() == (currentRound % 11) {
+			if e.GetNumber() == (currentRound % (len(e.GetotherPlayersChannels())+1)) {
 				e.SendMessagesToAllPlayers("ALIVE")
 			}
-			Leader = (currentRound % 11)
+			Leader = (currentRound % (len(e.GetotherPlayersChannels())+1))
 			sendTimer = 0
 		}
 	}
@@ -153,8 +154,8 @@ func (e Player) sendMessage(channel cha.Channel, msg string) error {
 }
 
 func (e Player) startRound(s int) {
-	if e.GetNumber() != (s % 11) {
-		i := (s % 11)
+	if e.GetNumber() != (s % (len(e.GetotherPlayersChannels())+1)) {
+		i := (s % (len(e.GetotherPlayersChannels())+1))
 		element := e.otherPlayersChannels[i]
 		e.sendMessage(element, "START")
 	}
