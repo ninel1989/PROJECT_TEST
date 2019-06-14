@@ -60,7 +60,7 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 		go func(e p.Player) {
 			defer wg.Done()
 			fmt.Printf("Player %s runs algorithm\n", e.GetUsername())
-			leader := e.LeaderAlgo(8, 8, 8)
+			leader := e.LeaderAlgo(8, 8, 6)
 			m.printToConsole(fmt.Sprintf("leader id: %d", leader))
 		}(element)
 	}
