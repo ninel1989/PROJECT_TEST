@@ -4,6 +4,7 @@ import (
 	cha "final_project3/channel"
 	"fmt"
 	"math"
+	"time"
 )
 
 //Player - Player in the game
@@ -64,27 +65,8 @@ func (e Player) SendMessagesToAllPlayers(msg string) {
 	//return countLostMessages
 }
 
-//SendMessagesToAllPlayers - Sends the random number of the user to all the others players channels
-// func (e Player) SendMessagesToAllPlayers() int {
-// 	countLostMessages := 0
-// 	for _, element := range e.otherPlayersChannels {
-// 		if err := e.sendNumber(element); err != nil {
-// 			countLostMessages++
-// 		}
-// 	}
-// 	return countLostMessages
-// }
-
-//GetSum - get all the numbers from the channel, summerizes and prints it
-// func (e Player) GetSum() int {
-// 	sum := e.ch.GetSum()
-// 	sum = sum + e.number
-// 	return sum
-// }
-
 //LeaderAlgo - execute the second algorithm
 func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
-	//m.printToConsole(fmt.Sprintf("Username id: %d, starts the algorithm", instance.players[i].GetUsername(), countLostMessages))
 	var currentRound = 0
 	var recTimer = 0
 	var sendTimer = 0
@@ -93,7 +75,9 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 	var d = delta
 	var Leader = -1
 	e.GetChannel() <- 0
-	for {
+	for i := 0; i < 10; i++ {
+		time.Sleep(1 * time.Second)
+		fmt.Printf("Run number %d, player %s\n", i, e.username)
 		for _, element := range e.otherPlayersChannels {
 			starts := e.ch.GetStartMsg()
 			alives := e.ch.GetAliveMsg()
@@ -134,17 +118,6 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 	}
 	return Leader
 }
-
-//-----------Private functions-----------
-
-//sendNumber - Sends the random number of the user to the channel (argument)
-//func (e Player) sendNumber(channel cha.Channel) error {
-//e.number is always the same!!!
-//	if err := channel.InsertNumber(e.number); err != nil {
-//		return err
-//	}
-//	return nil
-//}
 
 func (e Player) sendMessage(channel cha.Channel, msg string) error {
 	if err := channel.InsertMessage(msg, e.ch.GetID()); err != nil {

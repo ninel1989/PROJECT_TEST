@@ -4,7 +4,6 @@ import (
 	cha "final_project3/channel"
 	p "final_project3/player"
 	"fmt"
-	"math/rand"
 	"strconv"
 	"sync"
 )
@@ -48,31 +47,26 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	for i := 0; i < numOfPlayers; i++ {
 		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i))
 		addPlayer(e)
-		//leader := e.LeaderAlgo(8, 8, 8)
-
 	}
 
-	//RunAlgo - executing the algorithm
-	go func() {
-		for _, element := range instance.players {
-			leader := element.LeaderAlgo(8, 8, 8)
+	for _, element := range instance.players {
+		fmt.Printf("Player %s has been created\n", element.GetUsername())
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(numOfPlayers)
+	fmt.Println("Running for loop…")
+	for _, element := range instance.players {
+		go func(e p.Player) {
+			defer wg.Done()
+			fmt.Printf("Player %s runs algorithm\n", e.GetUsername())
+			leader := e.LeaderAlgo(8, 8, 8)
 			m.printToConsole(fmt.Sprintf("leader id: %d", leader))
-		}
-	}()
-	// m.printToConsole("The players in the currnt game:\n" + m.getPlayersList())
-	// //Exchange messages between players
-	// m.printToConsole("Exchange messages...")
-	// for i := 0; i < numOfPlayers; i++ {
-	// 	instance.players[i].SendMessagesToAllPlayers()
-	// 	m.printToConsole(fmt.Sprintf("Username: %s", instance.players[i].GetUsername()))
-	// }
-	// //Print sums
-	// m.printToConsole("Print sums...")
-	// for i := 0; i < numOfPlayers; i++ {
-	// 	sum := instance.players[i].GetSum()
-	// 	m.printToConsole(fmt.Sprintf("Username: %s, Sum: %d", instance.players[i].GetUsername(), sum))
-	// }
-	// m.printToConsole("-----------Exiting game...-----------")
+		}(element)
+	}
+	wg.Wait()
+
+	m.printToConsole("-----------Exiting game...-----------")
 	return nil
 }
 
@@ -86,11 +80,6 @@ func addPlayer(player p.Player) {
 //addChannel - Add a channel to the channels list
 func addChannel(ch cha.Channel) {
 	instance.channels = append(instance.channels, ch)
-}
-
-//randomNumber - Create and returns a random number
-func randomNumber() int {
-	return rand.Intn(100) + 1
 }
 
 //returns the channels list without a certain index
