@@ -12,7 +12,7 @@ type Channel struct {
 	message     string
 	startMsg    []int
 	aliveMsg    []int
-	round       chan int
+	round       int
 }
 
 //ChannelsProbNotGoodErrMsg - Error message
@@ -23,7 +23,7 @@ const MessageLostErrMsg = "The message got lost in the way"
 
 //New - Channel constructor
 func New(probability float64, id int, message string, startMsg []int, aliveMsg []int,
-	round chan int) (Channel, error) {
+	round int) (Channel, error) {
 	if probability > 1 || probability <= 0 {
 		return Channel{}, fmt.Errorf("%s", ChannelsProbNotGoodErrMsg)
 	}
@@ -33,8 +33,8 @@ func New(probability float64, id int, message string, startMsg []int, aliveMsg [
 
 //-----------Public functions-----------
 
-//GetChannel - return the channel of the user
-func (c Channel) GetChannel() chan int {
+//GetRound - return the channel of the user
+func (c Channel) GetRound() int {
 	return c.round
 }
 
@@ -49,8 +49,8 @@ func (c Channel) GetMessage() string {
 }
 
 //SetRound - setting channel round
-func (c Channel) SetRound(i int) {
-	c.round <- i
+func (c *Channel) SetRound(i int) {
+	c.round = i
 }
 
 //GetStartMsg - return the array of start messages
@@ -62,6 +62,21 @@ func (c Channel) GetStartMsg() []int {
 func (c Channel) GetAliveMsg() []int {
 	return c.aliveMsg
 }
+
+//SetStartMsg - return the array of start messages
+// func (c Channel) SetStartMsg(i int) {
+// 	if i > c.GetStartMsg() {
+// 		c.startMsg = i
+// 	}
+
+// }
+
+// //SetAliveMsg - return the array of alive messages
+// func (c Channel) SetAliveMsg(i int) {
+// 	if i > c.GetAliveMsg() {
+// 		c.aliveMsg = i
+// 	}
+// }
 
 // InsertNumber - Insert number from the player to the channel
 // func (c Channel) InsertNumber(number int) error {
@@ -78,13 +93,19 @@ func (c Channel) InsertMessage(msg string, fromCh int) error {
 	randomNumber := rand.Float64()
 	if randomNumber < c.probability {
 		if msg == "ALIVE" {
-			c.aliveMsg[fromCh]++
+			c.aliveMsg[fromCh] = 1
 		} else {
-			c.startMsg[fromCh]++
+			c.startMsg[fromCh] = 1
 		}
 		return nil
 	}
 	return fmt.Errorf("%s", MessageLostErrMsg)
+}
+
+//InitialMessages - initialize the array of messages
+func (c Channel) InitialMessages(id int) {
+	c.aliveMsg[id] = 0
+	c.startMsg[id] = 0
 }
 
 // GetSum - get all the numbers from the channel, summerizes and prints it

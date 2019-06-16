@@ -36,16 +36,16 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	m.printToConsole("Adding players...")
 	//Create channels
 	for i := 0; i < numOfPlayers; i++ {
-		round := make(chan int, 100)
+		//round := make(chan int, 100)
 		//round <- 0
 		alives := make([]int, numOfPlayers)
 		starts := make([]int, numOfPlayers)
-		channel, _ := cha.New(probability, i, "none", starts, alives, round)
+		channel, _ := cha.New(probability, i, "none", starts, alives, i)
 		addChannel(channel)
 	}
 	//Create players
 	for i := 0; i < numOfPlayers; i++ {
-		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i))
+		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i), instance.channels)
 		addPlayer(e)
 	}
 

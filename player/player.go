@@ -3,7 +3,6 @@ package player
 import (
 	cha "final_project3/channel"
 	"fmt"
-	"math"
 	"time"
 )
 
@@ -13,17 +12,18 @@ type Player struct {
 	number               int
 	ch                   cha.Channel
 	otherPlayersChannels []cha.Channel
+	allChan              []cha.Channel
 }
 
 //ChannelsListNotGoodErrMsg - Error message
 const ChannelsListNotGoodErrMsg = "Channels propbability must be between (0,1]"
 
 //New - Player constructor
-func New(username string, number int, userChannel cha.Channel, channelsList []cha.Channel) (Player, error) {
+func New(username string, number int, userChannel cha.Channel, channelsList []cha.Channel, allChan []cha.Channel) (Player, error) {
 	if channelsList == nil || len(channelsList) == 0 {
 		return Player{}, fmt.Errorf("%s", ChannelsListNotGoodErrMsg)
 	}
-	e := Player{username, number, userChannel, channelsList}
+	e := Player{username, number, userChannel, channelsList, allChan}
 	return e, nil
 }
 
@@ -44,10 +44,10 @@ func (e Player) GetNumber() int {
 	return e.number
 }
 
-//GetChannel - return the channel of the user
-func (e Player) GetChannel() chan int {
-	return e.ch.GetChannel()
-}
+// //GetChannel - return the channel of the user
+// func (e Player) GetChannel() chan int {
+// 	return e.ch.GetChannel()
+// }
 
 //GetotherPlayersChannels - return other players channels
 func (e Player) GetotherPlayersChannels() []cha.Channel {
@@ -67,14 +67,14 @@ func (e Player) SendMessagesToAllPlayers(msg string) {
 
 //LeaderAlgo - execute the second algorithm
 func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
-	var currentRound = 0
 	var recTimer = 0
 	var sendTimer = 0
-	var a = alfa
+	//var a = alfa
 	var b = beta
 	var d = delta
 	var Leader = -1
-	e.GetChannel() <- 0
+	//e.GetChannel() <- round
+	//x := <-e.GetChannel()
 	fmt.Printf("Player %d start the algorithm\n", e.GetNumber())
 	for i := 0; i < 5; i++ {
 		time.Sleep(1 * time.Second)
@@ -86,39 +86,46 @@ func (e Player) LeaderAlgo(alfa int, beta int, delta int) int {
 			//messageFrom, otherRound := s[0], s[1]
 			if ((starts[element.GetID()]) > 0) || ((alives[element.GetID()]) > 0) {
 				fmt.Printf("number %d in the condition, get message from:%d\n", e.GetNumber(), element.GetID())
-				starts[element.GetID()]--
-				alives[element.GetID()]--
-				otherRound := <-element.GetChannel()
+				e.ch.InitialMessages(element.GetID())
+				otherRound := element.GetRound()
+				currentRound := e.ch.GetRound()
+				fmt.Printf("number %d,my round is:%d, other round is:%d\n", e.GetNumber(), currentRound, otherRound)
 				if currentRound > otherRound {
-					fmt.Printf("number %d send start to, %d \n", e.GetNumber(), element.GetID())
+					fmt.Printf("number %d send start I am the leader to, %d \n", e.GetNumber(), element.GetID())
 					e.sendMessage(element, "START")
 				} else {
 
 					if currentRound < otherRound {
+						fmt.Printf("number %d is going to start new round, %d\n", e.GetNumber(), otherRound)
 						e.startRound(otherRound)
+						e.ch.SetRound(otherRound)
+						fmt.Printf("number %d change is round to, %d\n", e.GetNumber(), e.ch.GetRound())
 						sendTimer = int(d / b)
+						currentRound = e.ch.GetRound()
+					} else {
+						fmt.Printf("number %d and number, %d are equals\n", e.GetNumber(), element.GetID())
 					}
 				}
 				recTimer = 0
 			}
 		}
 		recTimer = recTimer + 1
-		if recTimer > 8*int(math.Round(float64(d/a))) {
-			if e.GetNumber() != (currentRound % (len(e.GetotherPlayersChannels()) + 1)) {
-				e.startRound(currentRound + 1)
-				sendTimer = int(d / b)
-			}
-			recTimer = 0
-		}
+		// if recTimer > 8*int(math.Round(float64(d/a))) {
+		// 	if e.GetNumber() != (currentRound % len(e.GetotherPlayersChannels())) {
+		// 		e.startRound(currentRound + 1)
+		// 		sendTimer = int(d / b)
+		// 	}
+		// 	recTimer = 0
+		// }
 		sendTimer = sendTimer + 1
-		if sendTimer >= int(d/b) {
-			if e.GetNumber() == (currentRound % (len(e.GetotherPlayersChannels()) + 1)) {
-				fmt.Printf("number %d send alive to all players\n", e.GetNumber())
-				e.SendMessagesToAllPlayers("ALIVE")
-			}
-			Leader = (currentRound % (len(e.GetotherPlayersChannels()) + 1))
-			sendTimer = 0
+		if e.GetNumber() == (e.ch.GetRound() % len(e.allChan)) {
+			fmt.Printf("number %d send alive to all players, my current round is:%d\n", e.GetNumber(), e.ch.GetRound())
+			e.SendMessagesToAllPlayers("ALIVE")
 		}
+		Leader = (e.ch.GetRound() % len(e.allChan))
+		fmt.Printf("number %d,my leader in run %d, is :%d\n", e.GetNumber(), i, Leader)
+		sendTimer = 0
+
 	}
 	return Leader
 }
@@ -131,12 +138,13 @@ func (e Player) sendMessage(channel cha.Channel, msg string) error {
 }
 
 func (e Player) startRound(s int) {
-	fmt.Printf("number %d start round\n", e.GetNumber())
-	if e.GetNumber() != (s % (len(e.GetotherPlayersChannels()) + 1)) {
-		i := (s % (len(e.GetotherPlayersChannels()) + 1))
-		element := e.otherPlayersChannels[i]
-		fmt.Printf("number %d send start to, %d\n", e.GetNumber(), element.GetID())
+	fmt.Printf("number %d start round number, %d\n", e.GetNumber(), s)
+	if e.GetNumber() != (s % len(e.allChan)) {
+		i := (s % len(e.allChan))
+		fmt.Printf("number %d start round number, %d, the result of mod is,%d\n", e.GetNumber(), s, i)
+		element := e.allChan[i]
+		fmt.Printf("number %d send start i am with you to, %d\n", e.GetNumber(), element.GetID())
 		e.sendMessage(element, "START")
 	}
-	e.ch.SetRound(s)
+
 }
