@@ -45,7 +45,7 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 	}
 	//Create players
 	for i := 0; i < numOfPlayers; i++ {
-		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i), instance.channels)
+		e, _ := p.New(fmt.Sprintf("%s%d", "player", i), i, instance.channels[i], getChannelsListWithoutIndex(i), instance.channels, numOfPlayers)
 		addPlayer(e)
 	}
 
@@ -60,7 +60,7 @@ func (m Manager) StartGame(numOfPlayers int, probability float64) error {
 		go func(e p.Player) {
 			defer wg.Done()
 			fmt.Printf("Player %s runs algorithm\n", e.GetUsername())
-			leader := e.LeaderAlgo(8, 8, 6)
+			leader := e.LeaderAlgo(4, 1)
 			m.printToConsole(fmt.Sprintf("leader id: %d", leader))
 		}(element)
 	}
