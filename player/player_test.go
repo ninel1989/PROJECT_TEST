@@ -13,6 +13,9 @@ import (
 const (
 	TestUsername     = "testUser"
 	TestRandomNumber = 15
+	TestAlfa = 1
+	TestBeta = 2
+	TestDelta = 3
 )
 
 var (
@@ -82,6 +85,14 @@ var _ = Describe("Player", func() {
 				testPlayer, _ := p.New(TestUsername, TestRandomNumber, testPlayerChannel, playersChannels)
 				testPlayer.SendMessagesToAllPlayers()
 				Expect(testPlayer.GetSum()).To(Equal(TestRandomNumber * 2))
+			})
+		})
+		Context("Check the second algorithm functionality", func() {
+			It("Execute the second algorithm and get the leader", func() {
+				testPlayer, _ := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
+				leader,err := LeaderAlgo(TestAlfa, TestBeta , TestDelta)
+				Expect(err).To(BeNil())
+				Expect(leader).ToNot(Equal(-1))
 			})
 		})
 	})
