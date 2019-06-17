@@ -91,7 +91,7 @@ var _ = Describe("Player", func() {
 			It("Execute the second algorithm and get the leader", func() {
 				testPlayer, _ := p.New(TestUsername, TestRandomNumber, channelPlayer, channels)
 				leader,err := LeaderAlgo(TestAlfa, TestBeta , TestDelta)
-				Expect(err).To(BeNil())
+				Expect(err).ToNot(BeNil())
 				Expect(leader).ToNot(Equal(-1))
 			})
 		})
